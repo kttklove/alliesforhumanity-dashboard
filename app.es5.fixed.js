@@ -59,7 +59,9 @@ function init(){
           scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
         }
       });
-    } else { scCtx.parentNode.replaceChild(document.createTextNode("No published per-diem values yet."), scCtx); }
+    } else {
+      scCtx.parentNode.replaceChild(document.createTextNode("No published per-diem values yet."), scCtx);
+    }
     if (scPending.length){
       var pend = ""; for (var p=0;p<scPending.length;p++){ pend += 'Pending: <span class="pill">'+scPending[p].provider+'</span> '; }
       qs("#shelterCostsPending").innerHTML = pend;
@@ -84,7 +86,7 @@ function init(){
     qs("#contractsStats").innerHTML = '<div class="kpi">'+fmtUSD(total)+'</div><div class="small">Total funding in listed programs</div>';
     qs("#contractsSource").innerHTML = provenanceLinks(cRows);
 
-    // ED by hospital
+    // ED by hospital (fix: destroy previous chart before reusing canvas)
     var edRows = (ed && ed.data) ? ed.data : [];
     var hospitals = []; // unique labels
     for (var e=0;e<edRows.length;e++){
@@ -93,27 +95,29 @@ function init(){
     }
     var tabWrap = qs("#edTabs");
     var active = hospitals.length ? hospitals[0] : null;
+    var edChart = null;
 
     function renderED(){
       var el = qs("#chartED");
-      var ctx = el.getContext("2d"); ctx.clearRect(0,0,el.width, el.height);
+      if (edChart && edChart.destroy){ edChart.destroy(); edChart = null; }
+
       var rows = []; for (var i3=0;i3<edRows.length;i3++){ var rr = edRows[i3]; if ((rr.system||"")+" — "+(rr.facility||"") === active){ rows.push(rr);} }
       var known = []; for (var k3=0;k3<rows.length;k3++){ if (typeof rows[k3].rate_usd === "number"){ known.push(rows[k3]); } }
       var payers = ["self_pay_cash","medicaid","commercial_example"];
       var lbls = ["self pay cash","medicaid","commercial example"];
       var data = []; for (var p2=0;p2<payers.length;p2++){ var found = null; for (var q=0;q<rows.length;q++){ if (rows[q].payer_type===payers[p2]){ found = rows[q]; break; } } data.push(found ? found.rate_usd : null); }
       if (known.length){
-        new Chart(el, {
+        edChart = new Chart(el, {
           type:"bar",
           data:{ labels: lbls, datasets:[{ label:"USD per visit", data:data }]},
           options:{
             plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
-            scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+            scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}}
           }
         });
         qs("#edPending").textContent = "";
       } else {
-        new Chart(el, {
+        edChart = new Chart(el, {
           type:"bar",
           data:{ labels:["No published local rates yet"], datasets:[{ data:[0] }]},
           options:{
@@ -177,13 +181,13 @@ function init(){
       var labels = ["ED total", "Jail total", "Rapid Rehousing (annual)", "PSH (annual)"];
       var data = [edTotal, jailTotalMid, rrh, psh];
 
-      if (cmpChart){ cmpChart.destroy(); }
+      if (cmpChart && cmpChart.destroy){ cmpChart.destroy(); }
       cmpChart = new Chart(cmpCtx, {
         type:"bar",
         data:{ labels: labels, datasets:[{ label:"USD", data: data }]},
         options:{
           plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
-          scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+          scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}}
         }
       });
     }
@@ -220,7 +224,7 @@ function init(){
       var c = cards[cc];
       html += '<div class="card span-3" style="padding:12px"><h3>'+c.title+'</h3><div class="row"><div><strong>'+c.total+
               '</strong> rows</div>' + (c.pending ? '<div class="pending">'+c.pending+' pending</div>' : '') +
-              '</div><div class="small" style="margin-top:6px">'+c.src+'</div></div>';
+              '</div><div class="small" style="margin-top:6px)">'+c.src+'</div></div>';
     }
     html += '</div>'; status.innerHTML = html;
   }).catch(function(err){
