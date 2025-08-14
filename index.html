@@ -4,85 +4,98 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Business of Homelessness — Marion County</title>
+  <meta name="description" content="Compare crisis pathway costs (ED, jail, shelter) with humane housing solutions using Marion County data and national benchmarks." />
   <link rel="preconnect" href="https://cdn.jsdelivr.net" />
   <style>
-    :root { --bg:#fff; --text:#111; --muted:#565; --accent:#0e7c86; --card:#f7f7f9; --shadow:0 2px 10px rgba(0,0,0,.08); --radius:16px; }
+    :root { --bg:#fff; --text:#111; --muted:#555; --accent:#0e7c86; --card:#f7f7f9; --shadow:0 2px 10px rgba(0,0,0,.08); --radius:16px; }
     body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Noto Sans,sans-serif;line-height:1.45}
-    .wrap{max-width:1060px;margin:0 auto;padding:20px}
+    a{color:var(--accent)}
+    .wrap{max-width:1100px;margin:0 auto;padding:20px}
     .grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
     .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
     .span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
     @media (max-width:920px){.span-8,.span-6{grid-column:span 12}.span-4,.span-3{grid-column:span 6}}
     @media (max-width:640px){.span-4,.span-3{grid-column:span 12}}
-    h2{margin:0 0 10px;font-size:20px} .source{font-size:12px;color:var(--muted);margin-top:10px}
+    h1{margin:4px 0 0} h2{margin:0 0 10px} h3{margin:0 0 6px;color:var(--muted);font-size:15px}
+    .small{font-size:12px;color:var(--muted)} .row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+    .pill{display:inline-block;padding:2px 8px;border-radius:999px;background:#eef8f9;border:1px solid #c8ecef;color:var(--accent);font-size:12px}
     .pending{display:inline-block;padding:2px 8px;border-radius:999px;background:#fff8e1;color:#8a5a00;font-size:12px;border:1px solid #ffda6a}
-    .pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#eef8f9;color:var(--accent);border:1px solid #c8ecef}
-    .row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
-    .stat{font-size:28px;font-weight:600}
-    .small{font-size:12px;color:var(--muted)}
-    .divider{height:1px;background:#eaeaea;margin:10px 0 14px}
-    .btnbar{display:flex;gap:8px;flex-wrap:wrap}
-    button.tab{background:#fff;border:1px solid #e6e6e6;border-radius:999px;padding:6px 10px;cursor:pointer;font-size:12px}
-    button.tab.active{background:#eef8f9;border-color:#c8ecef;color:var(--accent)}
-    .calc input[type=range]{width:100%}
+    .btnbar{display:flex;gap:6px;flex-wrap:wrap}
+    button.tab{background:#fff;border:1px solid #d8d8d8;border-radius:10px;padding:6px 10px;cursor:pointer;font-size:12px}
+    button.tab:hover{border-color:#bbb} button.tab.active{background:#eef8f9;border-color:#c8ecef;color:var(--accent)}
+    .kpi{font-size:28px;font-weight:600}
+    .divider{height:1px;background:#e8e8e8;margin:10px 0 12px}
+    .hint{font-size:12px;color:#333;background:#fff;border:1px dashed #ddd;border-radius:8px;padding:8px;margin-top:6px}
+    label {font-size:13px;color:#333}
+    input[type=range]{width:100%}
   </style>
 </head>
 <body>
   <header class="wrap">
     <h1>Business of Homelessness – Marion County</h1>
-    <p class="small">Static dashboard generated from JSON endpoints.</p>
+    <p class="small">We follow the dollars across two paths: <strong>Crisis</strong> (ED, jail, shelter) and <strong>Solutions</strong> (Rapid Rehousing, PSH). Sources linked under each chart.</p>
   </header>
-  <main class="wrap" id="app">
+  <main class="wrap" id="app" aria-live="polite">
     <section class="grid">
       <div class="card span-8" id="shelter-costs-card">
         <h2>Cost per night of shelter (USD)</h2>
-        <canvas id="chartShelterCosts"></canvas>
+        <canvas id="chartShelterCosts" aria-label="Bar chart for shelter per-diem by provider"></canvas>
         <div id="shelterCostsPending" class="small"></div>
-        <div class="source" id="shelterCostsSource"></div>
+        <div class="small" id="shelterCostsSource"></div>
       </div>
+
       <div class="card span-4">
         <h2>Contracts and funding</h2>
         <div id="contractsStats" class="row"></div>
         <div class="divider"></div>
-        <canvas id="chartContracts"></canvas>
-        <div class="source" id="contractsSource"></div>
+        <canvas id="chartContracts" aria-label="Funding by program"></canvas>
+        <div class="small" id="contractsSource"></div>
       </div>
-      <div class="card span-6">
-        <h2>ED visit facility fee – CPT 99284 (USD)</h2>
-        <div class="btnbar" id="edTabs"></div>
-        <canvas id="chartED"></canvas>
-        <div id="edPending" class="small"></div>
-        <div class="source" id="edSource"></div>
+
+      <div class="card span-12">
+        <h2>Emergency department facility fee — typical moderate visit <span class="small">(CPT 99284)</span></h2>
+        <div class="small">Tap a hospital to view payer rates. “CPT 99284” = a moderate complexity ED visit, commonly used for treat-and-release.</div>
+        <div class="btnbar" id="edTabs" role="tablist" aria-label="Hospital selector"></div>
+        <canvas id="chartED" aria-label="ED facility fee by payer type"></canvas>
+        <div class="small" id="edPending"></div>
+        <div class="small" id="edSource"></div>
       </div>
-      <div class="card span-6 calc" id="calcCard">
-        <h2>What-if: redirect crisis costs into housing</h2>
-        <label for="visitsSlider">ED treat-and-release visits per year</label>
-        <input id="visitsSlider" type="range" min="0" max="24" step="1" value="6" />
-        <div class="row">
-          <div><span class="stat" id="visitsCount">6</span> <span class="small">visits</span></div>
-          <div><span class="stat" id="edTotal">$0</span> <span class="small">ED cost (national mean, 2021)</span></div>
+
+      <div class="card span-12">
+        <h2>Crisis costs vs Housing (per person, annual)</h2>
+        <div class="grid">
+          <div class="span-6">
+            <label for="edVisits">ED treat-and-release visits per year</label>
+            <input id="edVisits" type="range" min="0" max="24" step="1" value="6" />
+            <div class="row"><div><span class="kpi" id="edVisitsCount">6</span> <span class="small">visits</span></div><div><span class="kpi" id="edTotal">$0</span> <span class="small">ED total</span></div></div>
+          </div>
+          <div class="span-6">
+            <label for="jailNights">Nights in jail per year</label>
+            <input id="jailNights" type="range" min="0" max="60" step="1" value="10" />
+            <div class="row"><div><span class="kpi" id="jailNightsCount">10</span> <span class="small">nights</span></div><div><span class="kpi" id="jailTotal">$0</span> <span class="small">Jail total<span id="jailRangeNote" class="small"></span></span></div></div>
+          </div>
         </div>
         <div class="divider"></div>
-        <div class="row">
-          <div><span class="stat" id="rrhAnnual">$0</span> <span class="small">Rapid Rehousing annual</span></div>
-          <div><span class="stat" id="pshAnnual">$0</span> <span class="small">PSH annual</span></div>
-        </div>
-        <div class="source" id="calcSource"></div>
+        <canvas id="chartCompare" aria-label="Bar chart comparing crisis totals to RRH and PSH"></canvas>
+        <div class="hint">This is a simple cost lens, not a moral one. It helps quantify how crisis responses add up compared to a full year of housing support for an adult household.</div>
+        <div class="small" id="compareSource"></div>
       </div>
+
       <div class="card span-12">
         <h2>Findings from the literature</h2>
         <div id="findings"></div>
       </div>
+
       <div class="card span-12">
         <h2>Data status</h2>
         <div id="status"></div>
       </div>
     </section>
   </main>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <script>
     function EP(p){ return new URL(p, window.location.href).toString(); }
-
     var ENDPOINTS = {
       shelter_costs: EP("data/endpoints/v1/marion/shelter_costs.json"),
       shelter_contracts: EP("data/endpoints/v1/marion/shelter_contracts.json"),
@@ -90,40 +103,22 @@
       ref_costs: EP("data/endpoints/v1/reference/costs.json"),
       findings: EP("data/endpoints/v1/reference/findings.json")
     };
-
     function fmtUSD(n){ return (n==null) ? "—" : n.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0}); }
     function qs(sel){ return document.querySelector(sel); }
-
-    async function loadJSON(path){
-      var res = await fetch(path, {cache:"no-store"});
-      if(!res.ok){ throw new Error("Failed to load "+path); }
-      return res.json();
-    }
-
+    async function loadJSON(path){ var res = await fetch(path, {cache:"no-store"}); if(!res.ok){ throw new Error("Failed to load "+path); } return res.json(); }
     function provenanceLinks(rows){
       var urls = [];
       (rows||[]).forEach(function(r){
         if(!r) return;
         var prov = r.provenance;
         if(Array.isArray(prov)){
-          for (var i=0;i<prov.length;i++){
-            var p = prov[i];
-            if(p && p.url && urls.indexOf(p.url)===-1){ urls.push(p.url); }
-          }
-        } else if(prov && prov.url){
-          if(urls.indexOf(prov.url)===-1){ urls.push(prov.url); }
-        }
+          prov.forEach(function(p){ if(p && p.url && urls.indexOf(p.url)===-1){ urls.push(p.url); } });
+        } else if(prov && prov.url){ if(urls.indexOf(prov.url)===-1){ urls.push(prov.url); } }
       });
-      var out = "";
-      for (var j=0;j<urls.length;j++){
-        if (j>0) out += " · ";
-        out += '<a href="'+urls[j]+'" target="_blank" rel="noopener">source</a>';
-      }
-      return out;
+      return urls.map(function(u){ return '<a href="'+u+'" target="_blank" rel="noopener">source</a>'; }).join(' · ');
     }
 
     async function init(){
-      var shelterCosts, contracts, ed, refs, finds;
       try{
         var all = await Promise.all([
           loadJSON(ENDPOINTS.shelter_costs),
@@ -132,12 +127,11 @@
           loadJSON(ENDPOINTS.ref_costs),
           loadJSON(ENDPOINTS.findings)
         ]);
-        shelterCosts = all[0]; contracts = all[1]; ed = all[2]; refs = all[3]; finds = all[4];
       } catch(e){
-        console.error(e);
-        qs("#app").innerHTML = '<div class="card"><h2>Load error</h2><p class="small">'+String(e)+'</p></div>';
-        return;
+        console.error(e); qs("#app").innerHTML = '<div class="card"><h2>Load error</h2><p class="small">'+String(e)+'</p></div>'; return;
       }
+
+      var shelterCosts = all[0], contracts = all[1], ed = all[2], refs = all[3], finds = all[4];
 
       // Shelter per-diem
       var scRows = (shelterCosts && shelterCosts.data) ? shelterCosts.data : [];
@@ -147,179 +141,141 @@
       if (scKnown.length){
         new Chart(scCtx, {
           type: "bar",
-          data: {
-            labels: scKnown.map(function(r){return r.provider;}),
-            datasets: [{ label: "USD per person per night", data: scKnown.map(function(r){return r.value;}) }]
-          },
-          options: {
-            plugins: {
-              legend: { display:false },
-              tooltip: { callbacks: { label: function(c){ return fmtUSD(c.parsed.y); } } }
-            },
-            scales: { y: { beginAtZero:true, ticks: { callback: function(v){ return fmtUSD(v); } } } }
-          }
+          data: { labels: scKnown.map(function(r){return r.provider;}), datasets: [{ label: "USD per person per night", data: scKnown.map(function(r){return r.value;}) }] },
+          options: { plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}}, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}} }
         });
-      } else {
-        scCtx.replaceWith(document.createTextNode("No published per-diem values yet."));
-      }
-      if (scPending.length){
-        var pills = scPending.map(function(r){ return 'Pending: <span class="pill">'+r.provider+'</span>'; }).join(" ");
-        qs("#shelterCostsPending").innerHTML = pills;
-      }
+      } else { scCtx.replaceWith(document.createTextNode("No published per-diem values yet.")); }
+      if (scPending.length){ qs("#shelterCostsPending").innerHTML = scPending.map(function(r){ return 'Pending: <span class="pill">'+r.provider+'</span>'; }).join(" "); }
       qs("#shelterCostsSource").innerHTML = provenanceLinks(scRows);
 
       // Contracts
       var cRows = (contracts && contracts.data) ? contracts.data : [];
       var cCtx = qs("#chartContracts");
       var amounts = cRows.map(function(r){ return r.amount_usd || 0; });
-      new Chart(cCtx, {
-        type:"bar",
-        data:{ labels: cRows.map(function(r){ return r.program; }), datasets:[{ label:"Amount (USD)", data: amounts }]},
-        options:{
-          indexAxis:"y",
-          plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.x); }}}},
-          scales:{ x:{ ticks:{ callback:function(v){ return fmtUSD(v); }}}}
-        }
-      });
-      var total = amounts.reduce(function(a,b){return a+b;},0);
-      qs("#contractsStats").innerHTML = '<div class="stat">'+fmtUSD(total)+'</div><div class="small">Total funding in listed programs</div>';
+      new Chart(cCtx, { type:"bar", data:{ labels:cRows.map(function(r){return r.program;}), datasets:[{ label:"Amount (USD)", data:amounts }] }, options:{ indexAxis:"y", plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.x); }}}}, scales:{ x:{ ticks:{ callback:function(v){ return fmtUSD(v); }}}} });
+      qs("#contractsStats").innerHTML = '<div class="kpi">'+fmtUSD(amounts.reduce(function(a,b){return a+b;},0))+'</div><div class="small">Total funding in listed programs</div>';
       qs("#contractsSource").innerHTML = provenanceLinks(cRows);
 
-      // ED rates
+      // ED by hospital
       var edRows = (ed && ed.data) ? ed.data : [];
       var hospitals = [];
-      for (var h=0; h<edRows.length; h++){
-        var lab = (edRows[h].system||"") + " — " + (edRows[h].facility||"");
-        if (hospitals.indexOf(lab)===-1) hospitals.push(lab);
-      }
+      edRows.forEach(function(r){
+        var label = (r.system||"") + " — " + (r.facility||"");
+        if (hospitals.indexOf(label) === -1){ hospitals.push(label); }
+      });
       var tabWrap = qs("#edTabs");
-      var active = hospitals[0] || null;
+      var active = hospitals.length ? hospitals[0] : null;
 
       function renderED(){
         var el = qs("#chartED");
-        var ctx = el.getContext("2d");
-        ctx.clearRect(0,0,el.width, el.height);
+        var ctx = el.getContext("2d"); ctx.clearRect(0,0,el.width, el.height);
         var rows = edRows.filter(function(r){ return (r.system||"")+" — "+(r.facility||"") === active; });
         var known = rows.filter(function(r){ return typeof r.rate_usd === "number"; });
         var payers = ["self_pay_cash","medicaid","commercial_example"];
-        var data = payers.map(function(p){
-          var row = rows.find(function(r){ return r.payer_type === p; });
-          return row ? row.rate_usd : null;
-        });
+        var data = payers.map(function(p){ var row = rows.find(function(r){ return r.payer_type === p; }); return row ? row.rate_usd : null; });
         if (known.length){
-          new Chart(el, {
-            type:"bar",
-            data:{ labels: payers.map(function(p){ return p.replace("_"," "); }), datasets:[{ label:"USD per visit", data: data }]},
-            options:{
-              plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
-              scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}}
-            }
-          });
+          new Chart(el, { type:"bar", data:{ labels:payers.map(function(p){ return p.replace("_"," "); }), datasets:[{ label:"USD per visit", data:data }]}, options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}}, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}}});
           qs("#edPending").textContent = "";
         } else {
-          new Chart(el, {
-            type:"bar",
-            data:{ labels:["No published rates available"], datasets:[{ data:[0] }]},
-            options:{ plugins:{ legend:{ display:false }, tooltip:{ enabled:false }}, scales:{ y:{ display:false }, x:{ display:false }}}
-          });
-          qs("#edPending").innerHTML = '<span class="pending">Local rate extraction pending</span> · National mean (2021): <strong>$750</strong>';
+          new Chart(el, { type:"bar", data:{ labels:["No published local rates yet"], datasets:[{ data:[0] }]}, options:{ plugins:{ legend:{ display:false }, tooltip:{ enabled:false }}, scales:{ y:{ display:false }, x:{ display:false }}}});
+          qs("#edPending").innerHTML = '<span class="pending">Local rate extraction pending</span> · We use national means in the comparison below.';
         }
         qs("#edSource").innerHTML = provenanceLinks(rows);
       }
-
       if (hospitals.length){
-        for (var i=0;i<hospitals.length;i++){
-          (function(hname, idx){
-            var b = document.createElement("button");
-            b.className = "tab" + (idx===0 ? " active" : "");
-            b.textContent = hname;
-            b.onclick = function(){
-              var bs = tabWrap.querySelectorAll("button.tab");
-              for (var k=0;k<bs.length;k++){ bs[k].classList.remove("active"); }
-              b.classList.add("active");
-              active = hname;
-              renderED();
-            };
-            tabWrap.appendChild(b);
-          })(hospitals[i], i);
-        }
-      } else {
-        tabWrap.innerHTML = '<span class="small">No hospitals found in dataset.</span>';
-      }
+        hospitals.forEach(function(h, i){
+          var b = document.createElement("button");
+          b.className = "tab" + (i===0 ? " active" : "");
+          b.setAttribute("role","tab");
+          b.setAttribute("aria-selected", i===0 ? "true" : "false");
+          b.textContent = h;
+          b.onclick = function(){
+            var bs = tabWrap.querySelectorAll("button.tab");
+            for (var k=0;k<bs.length;k++){ bs[k].classList.remove("active"); bs[k].setAttribute("aria-selected","false"); }
+            b.classList.add("active"); b.setAttribute("aria-selected","true");
+            active = h; renderED();
+          };
+          tabWrap.appendChild(b);
+        });
+      } else { tabWrap.innerHTML = '<span class="small">No hospitals found in dataset.</span>'; }
       renderED();
 
-      // What-if calculator
+      // Crisis vs Housing comparator
       var refRows = (refs && refs.data) ? refs.data : [];
-      function pick(category){
-        for (var i=0;i<refRows.length;i++){
-          if (refRows[i].category === category){
-            return refRows[i].value || 0;
-          }
-        }
-        return 0;
-      }
-      var edMean = pick("ed_treat_and_release_us") || 750;
-      var rrh = pick("rapid_rehousing_us") || 0;
-      var psh = pick("permanent_supportive_housing_us") || 0;
+      function pickVal(cat){ for (var i=0;i<refRows.length;i++){ if (refRows[i].category === cat) return refRows[i].value || 0; } return 0; }
+      function pickRange(cat){ for (var j=0;j<refRows.length;j++){ if (refRows[j].category === cat) return refRows[j].value_range || null; } return null; }
+      var edMean = pickVal("ed_treat_and_release_us") || 750;
+      var rrh = pickVal("rapid_rehousing_us") || 0;
+      var psh = pickVal("permanent_supportive_housing_us") || 0;
+      var jailRange = pickRange("jail_indiana") || [0,0];
+      var jailMid = (jailRange[0] + jailRange[1]) / 2;
 
-      var slider = qs("#visitsSlider");
-      function recalc(){
-        var n = Number(slider.value);
-        qs("#visitsCount").textContent = n;
-        qs("#edTotal").textContent = fmtUSD(n * edMean);
-        qs("#rrhAnnual").textContent = fmtUSD(rrh);
-        qs("#pshAnnual").textContent = fmtUSD(psh);
+      var edVisits = qs("#edVisits");
+      var jailNights = qs("#jailNights");
+      var cmpCtx = qs("#chartCompare");
+      var cmpChart = null;
+
+      function updateCompare(){
+        var v = Number(edVisits.value);
+        var n = Number(jailNights.value);
+        qs("#edVisitsCount").textContent = v;
+        qs("#jailNightsCount").textContent = n;
+
+        var edTotal = v * edMean;
+        var jailTotalMid = n * jailMid;
+        var jailTotalLow = n * jailRange[0];
+        var jailTotalHigh = n * jailRange[1];
+
+        qs("#edTotal").textContent = fmtUSD(edTotal);
+        qs("#jailTotal").textContent = fmtUSD(jailTotalMid);
+        qs("#jailRangeNote").textContent = jailRange[0] && jailRange[1] ? " (range "+fmtUSD(jailTotalLow)+"–"+fmtUSD(jailTotalHigh)+")" : "";
+
+        var labels = ["ED total", "Jail total", "Rapid Rehousing (annual)", "PSH (annual)"];
+        var data = [edTotal, jailTotalMid, rrh, psh];
+
+        if (cmpChart){ cmpChart.destroy(); }
+        cmpChart = new Chart(cmpCtx, {
+          type:"bar",
+          data:{ labels: labels, datasets:[{ label:"USD", data: data }]},
+          options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}}, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}} }
+        });
       }
-      slider.addEventListener("input", recalc);
-      recalc();
-      var calcSources = [];
-      for (var j=0;j<refRows.length;j++){
-        var cat = refRows[j].category;
-        if (cat==="ed_treat_and_release_us" || cat==="rapid_rehousing_us" || cat==="permanent_supportive_housing_us"){
-          calcSources.push(refRows[j]);
-        }
-      }
-      qs("#calcSource").innerHTML = provenanceLinks(calcSources);
+      edVisits.addEventListener("input", updateCompare);
+      jailNights.addEventListener("input", updateCompare);
+      updateCompare();
+      qs("#compareSource").innerHTML = provenanceLinks(refRows.filter(function(r){
+        return ["ed_treat_and_release_us","rapid_rehousing_us","permanent_supportive_housing_us","jail_indiana"].indexOf(r.category) !== -1;
+      }));
 
       // Findings
       var fRows = (finds && finds.data) ? finds.data : [];
       var fWrap = qs("#findings");
-      for (var m=0;m<fRows.length;m++){
-        var row = fRows[m];
+      fRows.forEach(function(row){
         var div = document.createElement("div");
-        div.className = "row";
-        div.style.margin = "6px 0";
-        div.textContent = "• " + row.text;
-        var src = document.createElement("div");
-        src.className = "source";
-        src.innerHTML = provenanceLinks([row]);
-        var box = document.createElement("div");
-        box.appendChild(div); box.appendChild(src);
+        div.className = "row"; div.style.margin = "6px 0";
+        div.innerHTML = "• " + row.text;
+        var src = document.createElement("div"); src.className = "small"; src.innerHTML = provenanceLinks([row]);
+        var box = document.createElement("div"); box.appendChild(div); box.appendChild(src);
         fWrap.appendChild(box);
-      }
+      });
 
       // Status
       var status = qs("#status");
-      function countPending(rows){ var c=0; for (var q=0;q<rows.length;q++){ if (rows[q].pending){ c++; } } return c; }
+      function countPending(rows){ return rows.filter(function(r){ return r.pending; }).length; }
       var cards = [
         { title:"Shelter costs", total: scRows.length, pending: countPending(scRows), src: provenanceLinks(scRows) },
         { title:"Contracts", total: cRows.length, pending: 0, src: provenanceLinks(cRows) },
         { title:"Hospital ED 99284", total: edRows.length, pending: countPending(edRows), src: provenanceLinks(edRows) },
         { title:"Reference costs", total: refRows.length, pending: 0, src: provenanceLinks(refRows) }
       ];
-      var statusHTML = '<div class="grid">';
-      for (var s=0;s<cards.length;s++){
-        var c = cards[s];
-        statusHTML += '<div class="card span-3" style="padding:12px">';
-        statusHTML += '<h3>'+c.title+'</h3>';
-        statusHTML += '<div class="row"><div><strong>'+c.total+'</strong> rows</div>';
-        if (c.pending){ statusHTML += '<div class="pending">'+c.pending+' pending</div>'; }
-        statusHTML += '</div><div class="source" style="margin-top:6px">'+c.src+'</div></div>';
-      }
-      statusHTML += '</div>';
-      status.innerHTML = statusHTML;
+      var html = '<div class="grid">';
+      cards.forEach(function(c){
+        html += '<div class="card span-3" style="padding:12px"><h3>'+c.title+'</h3><div class="row"><div><strong>'+c.total+
+                '</strong> rows</div>' + (c.pending ? '<div class="pending">'+c.pending+' pending</div>' : '') +
+                '</div><div class="small" style="margin-top:6px">'+c.src+'</div></div>';
+      });
+      html += '</div>'; status.innerHTML = html;
     }
-
     init();
   </script>
 </body>
