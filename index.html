@@ -148,15 +148,44 @@
       if (scPending.length){ qs("#shelterCostsPending").innerHTML = scPending.map(function(r){ return 'Pending: <span class="pill">'+r.provider+'</span>'; }).join(" "); }
       qs("#shelterCostsSource").innerHTML = provenanceLinks(scRows);
 
+      
       // Contracts
       var cRows = (contracts && contracts.data) ? contracts.data : [];
       var cCtx = qs("#chartContracts");
       var amounts = cRows.map(function(r){ return r.amount_usd || 0; });
-      new Chart(cCtx, { type:"bar", data:{ labels:cRows.map(function(r){return r.program;}), datasets:[{ label:"Amount (USD)", data:amounts }] }, options:{ indexAxis:"y", plugins:{ legend:{ display:false }, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.x); }}}}, scales:{ x:{ ticks:{ callback:function(v){ return fmtUSD(v); }}}} });
-      qs("#contractsStats").innerHTML = '<div class="kpi">'+fmtUSD(amounts.reduce(function(a,b){return a+b;},0))+'</div><div class="small">Total funding in listed programs</div>';
-      qs("#contractsSource").innerHTML = provenanceLinks(cRows);
 
-      // ED by hospital
+      var contractsConfig = {
+        type: "bar",
+        data: {
+          labels: cRows.map(function(r){ return r.program; }),
+          datasets: [
+            { label: "Amount (USD)", data: amounts }
+          ]
+        },
+        options: {
+          indexAxis: "y",
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(c){ return fmtUSD(c.parsed.x); }
+              }
+            }
+          },
+          scales: {
+            x: {
+              ticks: { callback: function(v){ return fmtUSD(v); } }
+            }
+          }
+        }
+      };
+      new Chart(cCtx, contractsConfig);
+
+      qs("#contractsStats").innerHTML =
+        '<div class="kpi">'+fmtUSD(amounts.reduce(function(a,b){return a+b;},0))+
+        '</div><div class="small">Total funding in listed programs</div>';
+      qs("#contractsSource").innerHTML = provenanceLinks(cRows);
+// ED by hospital
       var edRows = (ed && ed.data) ? ed.data : [];
       var hospitals = [];
       edRows.forEach(function(r){
@@ -174,12 +203,50 @@
         var payers = ["self_pay_cash","medicaid","commercial_example"];
         var data = payers.map(function(p){ var row = rows.find(function(r){ return r.payer_type === p; }); return row ? row.rate_usd : null; });
         if (known.length){
-          new Chart(el, { type:"bar", data:{ labels:payers.map(function(p){ return p.replace("_"," "); }), datasets:[{ label:"USD per visit", data:data }]}, options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}}, scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}}});
-          qs("#edPending").textContent = "";
-        } else {
-          new Chart(el, { type:"bar", data:{ labels:["No published local rates yet"], datasets:[{ data:[0] }]}, options:{ plugins:{ legend:{ display:false }, tooltip:{ enabled:false }}, scales:{ y:{ display:false }, x:{ display:false }}}});
-          qs("#edPending").innerHTML = '<span class="pending">Local rate extraction pending</span> · We use national means in the comparison below.';
-        }
+        // draw with known local rates
+        var edConfigKnown = {
+          type: "bar",
+          data: {
+            labels: payers.map(function(p){ return p.replace("_"," "); }),
+            datasets: [
+              { label: "USD per visit", data: data }
+            ]
+          },
+          options: {
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: function(c){ return fmtUSD(c.parsed.y); }
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { callback: function(v){ return fmtUSD(v); } }
+              }
+            }
+          }
+        };
+        new Chart(el, edConfigKnown);
+        qs("#edPending").textContent = "";
+} else {
+        // placeholder when local rates missing
+        var edConfigEmpty = {
+          type: "bar",
+          data: {
+            labels: ["No published local rates yet"],
+            datasets: [{ data: [0] }]
+          },
+          options: {
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            scales: { y: { display: false }, x: { display: false } }
+          }
+        };
+        new Chart(el, edConfigEmpty);
+        qs("#edPending").innerHTML = '<span class="pending">Local rate extraction pending</span> · We use national means in the comparison below.';
+}
         qs("#edSource").innerHTML = provenanceLinks(rows);
       }
       if (hospitals.length){
