@@ -51,9 +51,14 @@ function init(){
     if (scKnown.length){
       var labels1 = []; var data1 = [];
       for (var i2=0;i2<scKnown.length;i2++){ labels1.push(scKnown[i2].provider); data1.push(scKnown[i2].value); }
-      new Chart(scCtx, { type:"bar", data:{ labels: labels1, datasets:[{ label:"USD per person per night", data:data1 }]},
-        options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); } }}},
-                  scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} } });
+      new Chart(scCtx, {
+        type:"bar",
+        data:{ labels: labels1, datasets:[{ label:"USD per person per night", data:data1 }]},
+        options:{
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); } }}},
+          scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+        }
+      });
     } else { scCtx.parentNode.replaceChild(document.createTextNode("No published per-diem values yet."), scCtx); }
     if (scPending.length){
       var pend = ""; for (var p=0;p<scPending.length;p++){ pend += 'Pending: <span class="pill">'+scPending[p].provider+'</span> '; }
@@ -66,9 +71,15 @@ function init(){
     var cCtx = qs("#chartContracts");
     var labels2 = []; var amounts = [];
     for (var j2=0;j2<cRows.length;j2++){ labels2.push(cRows[j2].program); amounts.push(cRows[j2].amount_usd || 0); }
-    new Chart(cCtx, { type:"bar", data:{ labels: labels2, datasets:[{ label:"Amount (USD)", data: amounts }]},
-      options:{ indexAxis:"y", plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.x); }}}},
-                scales:{ x:{ ticks:{ callback:function(v){ return fmtUSD(v); }}} } });
+    new Chart(cCtx, {
+      type:"bar",
+      data:{ labels: labels2, datasets:[{ label:"Amount (USD)", data: amounts }]},
+      options:{
+        indexAxis:"y",
+        plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.x); }}}},
+        scales:{ x:{ ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+      }
+    });
     var total = 0; for (var t=0;t<amounts.length;t++){ total += amounts[t]; }
     qs("#contractsStats").innerHTML = '<div class="kpi">'+fmtUSD(total)+'</div><div class="small">Total funding in listed programs</div>';
     qs("#contractsSource").innerHTML = provenanceLinks(cRows);
@@ -92,13 +103,24 @@ function init(){
       var lbls = ["self pay cash","medicaid","commercial example"];
       var data = []; for (var p2=0;p2<payers.length;p2++){ var found = null; for (var q=0;q<rows.length;q++){ if (rows[q].payer_type===payers[p2]){ found = rows[q]; break; } } data.push(found ? found.rate_usd : null); }
       if (known.length){
-        new Chart(el, { type:"bar", data:{ labels: lbls, datasets:[{ label:"USD per visit", data:data }]},
-          options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
-                    scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}} });
+        new Chart(el, {
+          type:"bar",
+          data:{ labels: lbls, datasets:[{ label:"USD per visit", data:data }]},
+          options:{
+            plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
+            scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+          }
+        });
         qs("#edPending").textContent = "";
       } else {
-        new Chart(el, { type:"bar", data:{ labels:["No published local rates yet"], datasets:[{ data:[0] }]},
-          options:{ plugins:{ legend:{display:false}, tooltip:{enabled:false}}, scales:{ y:{display:false}, x:{display:false}} });
+        new Chart(el, {
+          type:"bar",
+          data:{ labels:["No published local rates yet"], datasets:[{ data:[0] }]},
+          options:{
+            plugins:{ legend:{display:false}, tooltip:{enabled:false}},
+            scales:{ y:{display:false}, x:{display:false}}
+          }
+        });
         qs("#edPending").innerHTML = '<span class="pending">Local rate extraction pending</span> · Using national means below.';
       }
       qs("#edSource").innerHTML = provenanceLinks(rows);
@@ -159,8 +181,10 @@ function init(){
       cmpChart = new Chart(cmpCtx, {
         type:"bar",
         data:{ labels: labels, datasets:[{ label:"USD", data: data }]},
-        options:{ plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
-                  scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}}} }
+        options:{
+          plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label:function(c){ return fmtUSD(c.parsed.y); }}}},
+          scales:{ y:{ beginAtZero:true, ticks:{ callback:function(v){ return fmtUSD(v); }}} }
+        }
       });
     }
     edVisits.addEventListener("input", updateCompare);
