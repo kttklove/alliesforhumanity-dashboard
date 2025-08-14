@@ -72,12 +72,13 @@ button.tab.active{background:#eef8f9;border-color:#c8ecef;color:var(--accent)}
 </main>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 <script>
+const EP = (p) => new URL(p, window.location.href).toString();
 const ENDPOINTS = {
-  shelter_costs:"data/endpoints/v1/marion/shelter_costs.json",
-  shelter_contracts:"data/endpoints/v1/marion/shelter_contracts.json",
-  hospital_er:"data/endpoints/v1/marion/hospital_er_99284.json",
-  ref_costs:"data/endpoints/v1/reference/costs.json",
-  findings:"data/endpoints/v1/reference/findings.json"
+  shelter_costs: EP("data/endpoints/v1/marion/shelter_costs.json"),
+  shelter_contracts: EP("data/endpoints/v1/marion/shelter_contracts.json"),
+  hospital_er: EP("data/endpoints/v1/marion/hospital_er_99284.json"),
+  ref_costs: EP("data/endpoints/v1/reference/costs.json"),
+  findings: EP("data/endpoints/v1/reference/findings.json"),
 };
 const fmtUSD = (n)=> n==null ? "—" : n.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0});
 const qs = (s)=> document.querySelector(s);
