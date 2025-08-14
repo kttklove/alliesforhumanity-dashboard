@@ -1,0 +1,190 @@
+{
+  "metadata": {
+    "package_name": "business_of_homelessness_marion_county",
+    "generated_at": "2025-08-14",
+    "version": "1.0.0",
+    "notes": "Level 4 ED facility fee rates by payer; local extraction pending."
+  },
+  "data": [
+    {
+      "system": "Eskenazi Health",
+      "facility": "Sidney & Lois Eskenazi Hospital",
+      "cpt": "99284",
+      "payer_type": "self_pay_cash",
+      "rate_usd": null,
+      "year": 2024,
+      "pending": true,
+      "provenance": {
+        "title": "Pricing Information \u2013 Standard Charges",
+        "publisher": "Eskenazi Health",
+        "url": "https://www.eskenazihealth.edu/about/pricing-information",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Eskenazi Health",
+      "facility": "Sidney & Lois Eskenazi Hospital",
+      "cpt": "99284",
+      "payer_type": "medicaid",
+      "rate_usd": null,
+      "year": 2024,
+      "pending": true,
+      "provenance": {
+        "title": "Pricing Information \u2013 Standard Charges",
+        "publisher": "Eskenazi Health",
+        "url": "https://www.eskenazihealth.edu/about/pricing-information",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Eskenazi Health",
+      "facility": "Sidney & Lois Eskenazi Hospital",
+      "cpt": "99284",
+      "payer_type": "commercial_example",
+      "rate_usd": null,
+      "year": 2024,
+      "pending": true,
+      "provenance": {
+        "title": "Pricing Information \u2013 Standard Charges",
+        "publisher": "Eskenazi Health",
+        "url": "https://www.eskenazihealth.edu/about/pricing-information",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "IU Health",
+      "facility": "Methodist/University",
+      "cpt": "99284",
+      "payer_type": "self_pay_cash",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Standard Charge Listing",
+        "publisher": "IU Health",
+        "url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "IU Health",
+      "facility": "Methodist/University",
+      "cpt": "99284",
+      "payer_type": "medicaid",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Standard Charge Listing",
+        "publisher": "IU Health",
+        "url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "IU Health",
+      "facility": "Methodist/University",
+      "cpt": "99284",
+      "payer_type": "commercial_example",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Standard Charge Listing",
+        "publisher": "IU Health",
+        "url": "https://iuhealth.org/schedule-an-appointment/price-estimates/standard-charge-listing",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Community Health Network",
+      "facility": "Community Hospital East",
+      "cpt": "99284",
+      "payer_type": "self_pay_cash",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "List of Standard Charges",
+        "publisher": "Community Health Network",
+        "url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Community Health Network",
+      "facility": "Community Hospital East",
+      "cpt": "99284",
+      "payer_type": "medicaid",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "List of Standard Charges",
+        "publisher": "Community Health Network",
+        "url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Community Health Network",
+      "facility": "Community Hospital East",
+      "cpt": "99284",
+      "payer_type": "commercial_example",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "List of Standard Charges",
+        "publisher": "Community Health Network",
+        "url": "https://www.ecommunity.com/central-pricing-office/list-of-standard-charges",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Ascension St. Vincent",
+      "facility": "Indianapolis (86th St.)",
+      "cpt": "99284",
+      "payer_type": "self_pay_cash",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Price Transparency",
+        "publisher": "Ascension",
+        "url": "https://healthcare.ascension.org/price-transparency",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Ascension St. Vincent",
+      "facility": "Indianapolis (86th St.)",
+      "cpt": "99284",
+      "payer_type": "medicaid",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Price Transparency",
+        "publisher": "Ascension",
+        "url": "https://healthcare.ascension.org/price-transparency",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "system": "Ascension St. Vincent",
+      "facility": "Indianapolis (86th St.)",
+      "cpt": "99284",
+      "payer_type": "commercial_example",
+      "rate_usd": null,
+      "year": 2025,
+      "pending": true,
+      "provenance": {
+        "title": "Price Transparency",
+        "publisher": "Ascension",
+        "url": "https://healthcare.ascension.org/price-transparency",
+        "accessed": "2025-08-14"
+      }
+    }
+  ]
+}

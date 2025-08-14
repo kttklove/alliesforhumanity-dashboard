@@ -1,0 +1,64 @@
+{
+  "metadata": {
+    "package_name": "business_of_homelessness_marion_county",
+    "generated_at": "2025-08-14",
+    "version": "1.0.0",
+    "notes": "City and philanthropic contracts related to Winter Contingency and non-congregate shelter."
+  },
+  "data": [
+    {
+      "funder": "City of Indianapolis (ARPA)",
+      "program": "Winter Housing for Homeless Neighbors (Winter Contingency)",
+      "amount_usd": 1868943,
+      "timeframe": "2021-11 to 2022-03",
+      "capacity_served": {
+        "individuals": 896
+      },
+      "provenance": {
+        "title": "Consolidated City of Indianapolis/Marion County 2022 Recovery Plan Performance Report",
+        "publisher": "City of Indianapolis / U.S. Treasury portal",
+        "url": "https://us-east-1-indy.graphassets.com/ActDBC5rvRWeCZlNNnLrDz/3u2FoZZUSqqd1FLcvRib",
+        "published": "2022-07-31",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "funder": "City of Indianapolis (ARPA)",
+      "program": "Non-Congregate Housing for Homeless Neighbors",
+      "amount_usd": 2945675,
+      "timeframe": "2021-04 to 2022-06",
+      "capacity_served": {
+        "individuals": 531,
+        "note": "Combined with Winter Contingency figure per report context"
+      },
+      "provenance": {
+        "title": "Consolidated City of Indianapolis/Marion County 2024 Recovery Plan Performance Report",
+        "publisher": "U.S. Treasury",
+        "url": "https://home.treasury.gov/system/files/136/City-Of-Indianapolis-and-Marion-County-Indiana_2024-Recovery-Plan_SLT-1504.pdf",
+        "published": "2024-07-31",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "funder": "City of Indianapolis + Philanthropy",
+      "program": "Family Overflow Shelter at former IPS School 68 (Winter 2024\u201325)",
+      "amount_usd": 578000,
+      "timeframe": "2024-12 to 2025-03",
+      "capacity_served": {
+        "families": {
+          "range": [
+            34,
+            40
+          ]
+        }
+      },
+      "provenance": {
+        "title": "Community-wide planning advances Winter Contingency (press release)",
+        "publisher": "Lilly Endowment Inc.",
+        "url": "https://lillyendowment.org/wp-content/uploads/2024/12/2024-winter-contingency.pdf",
+        "published": "2024-12-04",
+        "accessed": "2025-08-14"
+      }
+    }
+  ]
+}

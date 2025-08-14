@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "package_name": "business_of_homelessness_marion_county",
+    "generated_at": "2025-08-14",
+    "version": "1.0.0",
+    "notes": "National or statewide reference costs for context."
+  },
+  "data": [
+    {
+      "category": "jail_indiana",
+      "metric": "cost_per_person_day_usd",
+      "value_range": [
+        60,
+        85
+      ],
+      "year": 2025,
+      "notes": "Indiana Sheriffs\u2019 Association study cited average ~$74/day; counties report higher actuals in some facilities.",
+      "provenance": [
+        {
+          "title": "Indiana Department of Correction readies to pay $12 million in back jail payments",
+          "publisher": "Indiana Capital Chronicle",
+          "url": "https://indianacapitalchronicle.com/2025/06/11/indiana-department-of-correction-readies-to-pay-12-million-in-back-jail-payments/",
+          "published": "2025-06-11"
+        }
+      ]
+    },
+    {
+      "category": "ed_treat_and_release_us",
+      "metric": "avg_cost_per_visit_usd",
+      "value_note": "~$750 (national mean, 2021)",
+      "year_of_cost_data": 2021,
+      "provenance": [
+        {
+          "title": "Costs of Treat-and-Release Emergency Department Visits in the United States, 2021 (Statistical Brief #311)",
+          "publisher": "HCUP/AHRQ",
+          "url": "https://hcup-us.ahrq.gov/reports/statbriefs/sb311-ED-visit-costs-2021.pdf",
+          "published": "2024-09-15"
+        },
+        {
+          "title": "Using the ER for Non-Emergencies Is Expensive",
+          "publisher": "GoodRx Health",
+          "url": "https://www.goodrx.com/health-topic/emergency-care/avoid-er-for-non-emergencies",
+          "published": "2023-03-23"
+        }
+      ]
+    },
+    {
+      "category": "foster_care_indiana",
+      "metric": "per_diem_child_usd",
+      "value_range": [
+        26,
+        76
+      ],
+      "year": 2025,
+      "notes": "Ranges by age/needs; see official DCS rate letter and schedule.",
+      "provenance": [
+        {
+          "title": "2025 Foster Parent Rate Letter",
+          "publisher": "Indiana Department of Child Services (DCS)",
+          "url": "https://www.in.gov/dcs/files/2025-Foster-Parent-Rate-Letter.pdf",
+          "published": "2025-01-07"
+        }
+      ]
+    },
+    {
+      "category": "rapid_rehousing_us",
+      "metric": "annual_cost_per_adult_household_usd",
+      "value": 8486,
+      "year_of_cost_data": 2022,
+      "provenance": [
+        {
+          "title": "How Much Would It Cost to Provide Housing First to All Households Staying in Homeless Shelters?",
+          "publisher": "National Alliance to End Homelessness",
+          "url": "https://endhomelessness.org/resources/research-and-analysis/how-much-would-it-cost-to-provide-housing-first-to-all-households-staying-in-homeless-shelters/",
+          "published": "2025-03-11"
+        }
+      ]
+    },
+    {
+      "category": "permanent_supportive_housing_us",
+      "metric": "annual_cost_per_adult_household_usd",
+      "value": 20115,
+      "year_of_cost_data": 2022,
+      "provenance": [
+        {
+          "title": "How Much Would It Cost to Provide Housing First to All Households Staying in Homeless Shelters?",
+          "publisher": "National Alliance to End Homelessness",
+          "url": "https://endhomelessness.org/resources/research-and-analysis/how-much-would-it-cost-to-provide-housing-first-to-all-households-staying-in-homeless-shelters/",
+          "published": "2025-03-11"
+        },
+        {
+          "title": "Permanent Supportive Housing with Housing First \u2013 Economic Review",
+          "publisher": "The Community Guide / Better Care Playbook",
+          "url": "https://bettercareplaybook.org/resources/permanent-supportive-housing-housing-first-findings-community-guide-systematic-economic",
+          "published": "2022-04-04"
+        }
+      ]
+    }
+  ]
+}

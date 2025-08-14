@@ -1,0 +1,72 @@
+{
+  "metadata": {
+    "package_name": "business_of_homelessness_marion_county",
+    "generated_at": "2025-08-14",
+    "version": "1.0.0",
+    "notes": "Shelter per-diem costs for Marion County providers."
+  },
+  "data": [
+    {
+      "provider": "Wheeler Mission",
+      "metric": "cost_per_person_night_usd",
+      "value": 18.63,
+      "year": 2025,
+      "unit": "USD/person/night",
+      "method": "published_provider_benchmark",
+      "pending": false,
+      "provenance": {
+        "title": "Donor FAQs",
+        "publisher": "Wheeler Mission",
+        "url": "https://wheelermission.org/ways-to-give/donor-faqs/",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "provider": "Dayspring Center (family shelter)",
+      "metric": "cost_per_person_night_usd",
+      "value": null,
+      "year": null,
+      "unit": "USD/person/night",
+      "method": "APRA_contract_rate_requested",
+      "pending": true,
+      "provenance": {
+        "title": "Program overview",
+        "publisher": "Dayspring Center",
+        "url": "https://dayspringindy.org/",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "provider": "Holy Family Shelter (Catholic Charities)",
+      "metric": "cost_per_person_night_usd",
+      "value": null,
+      "year": null,
+      "unit": "USD/person/night",
+      "method": "APRA_contract_rate_requested",
+      "pending": true,
+      "provenance": {
+        "title": "Program overview",
+        "publisher": "Catholic Charities Indianapolis",
+        "url": "https://www.archindy.org/cc/holyfamily/",
+        "accessed": "2025-08-14"
+      }
+    },
+    {
+      "provider": "Family overflow (former IPS School 68; Winter 2024\u201325)",
+      "metric": "cost_per_family_night_usd",
+      "value": null,
+      "year": 2024,
+      "unit": "USD/family/night",
+      "method": "APRA_contract_rate_requested",
+      "pending": true,
+      "notes": "Funding and capacity published; per-diem rate not public.",
+      "provenance": {
+        "title": "Community-wide planning advances Winter Contingency efforts with shelter at former IPS School 68",
+        "publisher": "Lilly Endowment Inc.",
+        "url": "https://lillyendowment.org/wp-content/uploads/2024/12/2024-winter-contingency.pdf",
+        "published": "2024-12-04",
+        "accessed": "2025-08-14"
+      }
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "metadata": {
+    "package_name": "business_of_homelessness_marion_county",
+    "generated_at": "2025-08-14",
+    "version": "1.0.0",
+    "notes": "Evidence summaries and key findings with provenance."
+  },
+  "data": [
+    {
+      "text": "Indiana jails\u2019 real per-person costs average around $60\u2013$85/day; an Indiana Sheriffs\u2019 Association study cited ~$74/day; state reimbursement rates have lagged these costs.",
+      "provenance": [
+        {
+          "title": "Indiana Department of Correction readies to pay $12 million in back jail payments",
+          "publisher": "Indiana Capital Chronicle",
+          "url": "https://indianacapitalchronicle.com/2025/06/11/indiana-department-of-correction-readies-to-pay-12-million-in-back-jail-payments/",
+          "published": "2025-06-11"
+        }
+      ]
+    },
+    {
+      "text": "Treat-and-release ED visits average roughly $750 nationally (2021); consumer cash-price estimates often fall around $2,400\u2013$2,600 without insurance.",
+      "provenance": [
+        {
+          "title": "Costs of Treat-and-Release Emergency Department Visits in the United States, 2021 (Statistical Brief #311)",
+          "publisher": "HCUP/AHRQ",
+          "url": "https://hcup-us.ahrq.gov/reports/statbriefs/sb311-ED-visit-costs-2021.pdf"
+        },
+        {
+          "title": "Using the ER for Non-Emergencies Is Expensive",
+          "publisher": "GoodRx Health",
+          "url": "https://www.goodrx.com/health-topic/emergency-care/avoid-er-for-non-emergencies"
+        }
+      ]
+    },
+    {
+      "text": "Housing First / PSH produces net public savings; U.S. median benefit \u2248 $18,247 vs. ~$16,479 cost (~1.8:1 benefit-to-cost).",
+      "provenance": [
+        {
+          "title": "Permanent Supportive Housing With Housing First \u2013 Economic Review (Community Guide)",
+          "publisher": "PMC",
+          "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8863642/"
+        },
+        {
+          "title": "Systematic research review finds benefits of Housing First programs in U.S. outweigh costs",
+          "publisher": "National Low Income Housing Coalition",
+          "url": "https://nlihc.org/resource/systematic-research-review-finds-benefits-housing-first-programs-us-outweigh-costs"
+        }
+      ]
+    },
+    {
+      "text": "In the Denver Social Impact Bond evaluation, supportive housing cut police contacts and jail days and reduced emergency department visits by ~40%.",
+      "provenance": [
+        {
+          "title": "Supportive Housing Leads to Greater Housing Stability, Less Jail Time, and Cost Savings",
+          "publisher": "NLIHC",
+          "url": "https://nlihc.org/resource/supportive-housing-leads-greater-housing-stability-less-jail-time-and-cost-savings"
+        },
+        {
+          "title": "What we learned from the evaluation (Denver SIB)",
+          "publisher": "Urban Institute",
+          "url": "https://www.urban.org/policy-centers/metropolitan-housing-and-communities-policy-center/projects/denver-supportive-housing-social-impact-bond-initiative/what-we-learned-evaluation"
+        }
+      ]
+    }
+  ]
+}

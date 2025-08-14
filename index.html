@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Business of Homelessness — Marion County</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<style>
+:root { --bg:#fff; --text:#111; --muted:#565; --accent:#0e7c86; --card:#f7f7f9; --shadow:0 2px 10px rgba(0,0,0,.08); --radius:16px; }
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Noto Sans,sans-serif;line-height:1.45}
+.wrap{max-width:1060px;margin:0 auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:16px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
+.span-12{grid-column:span 12}.span-8{grid-column:span 8}.span-6{grid-column:span 6}.span-4{grid-column:span 4}.span-3{grid-column:span 3}
+@media (max-width:920px){.span-8,.span-6{grid-column:span 12}.span-4,.span-3{grid-column:span 6}}
+@media (max-width:640px){.span-4,.span-3{grid-column:span 12}}
+h2{margin:0 0 10px;font-size:20px} .source{font-size:12px;color:var(--muted);margin-top:10px}
+.pending{display:inline-block;padding:2px 8px;border-radius:999px;background:#fff8e1;color:#8a5a00;font-size:12px;border:1px solid #ffda6a}
+.pill{display:inline-block;font-size:12px;padding:2px 8px;border-radius:999px;background:#eef8f9;color:var(--accent);border:1px solid #c8ecef}
+.row{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.stat{font-size:28px;font-weight:600}
+.small{font-size:12px;color:var(--muted)}
+.divider{height:1px;background:#eaeaea;margin:10px 0 14px}
+.btnbar{display:flex;gap:8px;flex-wrap:wrap}
+button.tab{background:#fff;border:1px solid #e6e6e6;border-radius:999px;padding:6px 10px;cursor:pointer;font-size:12px}
+button.tab.active{background:#eef8f9;border-color:#c8ecef;color:var(--accent)}
+.calc input[type=range]{width:100%}
+</style>
+</head>
+<body>
+<header class="wrap"><h1>Business of Homelessness – Marion County</h1><p class="small">Static dashboard generated from JSON endpoints.</p></header>
+<main class="wrap" id="app">
+<section class="grid">
+  <div class="card span-8" id="shelter-costs-card">
+    <h2>Cost per night of shelter (USD)</h2>
+    <canvas id="chartShelterCosts"></canvas>
+    <div id="shelterCostsPending" class="small"></div>
+    <div class="source" id="shelterCostsSource"></div>
+  </div>
+  <div class="card span-4">
+    <h2>Contracts and funding</h2>
+    <div id="contractsStats" class="row"></div>
+    <div class="divider"></div>
+    <canvas id="chartContracts"></canvas>
+    <div class="source" id="contractsSource"></div>
+  </div>
+  <div class="card span-6">
+    <h2>ED visit facility fee – CPT 99284 (USD)</h2>
+    <div class="btnbar" id="edTabs"></div>
+    <canvas id="chartED"></canvas>
+    <div id="edPending" class="small"></div>
+    <div class="source" id="edSource"></div>
+  </div>
+  <div class="card span-6 calc" id="calcCard">
+    <h2>What-if: redirect crisis costs into housing</h2>
+    <label for="visitsSlider">ED treat-and-release visits per year</label>
+    <input id="visitsSlider" type="range" min="0" max="24" step="1" value="6" />
+    <div class="row"><div><span class="stat" id="visitsCount">6</span> <span class="small">visits</span></div><div><span class="stat" id="edTotal">$0</span> <span class="small">ED cost</span></div></div>
+    <div class="divider"></div>
+    <div class="row"><div><span class="stat" id="rrhAnnual">$0</span> <span class="small">Rapid Rehousing annual</span></div><div><span class="stat" id="pshAnnual">$0</span> <span class="small">PSH annual</span></div></div>
+    <div class="source" id="calcSource"></div>
+  </div>
+  <div class="card span-12">
+    <h2>Findings from the literature</h2>
+    <div id="findings"></div>
+  </div>
+  <div class="card span-12">
+    <h2>Data status</h2>
+    <div id="status"></div>
+  </div>
+</section>
+</main>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script>
+const ENDPOINTS = {
+  shelter_costs:"data/endpoints/v1/marion/shelter_costs.json",
+  shelter_contracts:"data/endpoints/v1/marion/shelter_contracts.json",
+  hospital_er:"data/endpoints/v1/marion/hospital_er_99284.json",
+  ref_costs:"data/endpoints/v1/reference/costs.json",
+  findings:"data/endpoints/v1/reference/findings.json"
+};
+const fmtUSD = (n)=> n==null ? "—" : n.toLocaleString(undefined,{style:"currency",currency:"USD",maximumFractionDigits:0});
+const qs = (s)=> document.querySelector(s);
+async function loadJSON(p){ const r=await fetch(p,{cache:"no-store"}); if(!r.ok) throw new Error("Failed "+p); return r.json(); }
+function provenanceLinks(rows){ const urls=new Set(); rows.forEach(r=>{ if(Array.isArray(r.provenance)){ r.provenance.forEach(p=>p?.url&&urls.add(p.url)); } else if(r?.provenance?.url){ urls.add(r.provenance.url);} }); return [...urls].map(u=>`<a href="${u}" target="_blank" rel="noopener">source</a>`).join(" · "); }
+
+async function init(){
+  const [shelterCosts, contracts, ed, refs, finds] = await Promise.all([loadJSON(ENDPOINTS.shelter_costs), loadJSON(ENDPOINTS.shelter_contracts), loadJSON(ENDPOINTS.hospital_er), loadJSON(ENDPOINTS.ref_costs), loadJSON(ENDPOINTS.findings)]);
+
+  // Shelter per-diem
+  const scRows=shelterCosts.data||[]; const scKnown=scRows.filter(r=>typeof r.value==="number"); const scPending=scRows.filter(r=>r.pending||r.value==null);
+  const scCtx=qs("#chartShelterCosts");
+  if(scKnown.length){ new Chart(scCtx,{type:"bar",data:{labels:scKnown.map(r=>r.provider),datasets:[{label:"USD per person per night",data:scKnown.map(r=>r.value)}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>fmtUSD(c.parsed.y)}}},scales:{y:{beginAtZero:true,ticks:{callback:(v)=>fmtUSD(v)}}}}); } else { scCtx.replaceWith(document.createTextNode("No published per-diem values yet.")); }
+  if(scPending.length){ qs("#shelterCostsPending").innerHTML=scPending.map(r=>`Pending: <span class="pill">${r.provider}</span>`).join(" "); }
+  qs("#shelterCostsSource").innerHTML=provenanceLinks(scRows);
+
+  // Contracts
+  const cRows=contracts.data||[]; const cCtx=qs("#chartContracts"); const amounts=cRows.map(r=>r.amount_usd||0);
+  new Chart(cCtx,{type:"bar",data:{labels:cRows.map(r=>r.program),datasets:[{label:"Amount (USD)",data:amounts}]},options:{indexAxis:"y",plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>fmtUSD(c.parsed.x)}}},scales:{x:{ticks:{callback:(v)=>fmtUSD(v)}}}});
+  qs("#contractsStats").innerHTML=`<div class="stat">${fmtUSD(amounts.reduce((a,b)=>a+b,0))}</div><div class="small">Total funding in listed programs</div>`;
+  qs("#contractsSource").innerHTML=provenanceLinks(cRows);
+
+  // ED rates
+  const edRows=ed.data||[]; const hospitals=[...new Set(edRows.map(r=>`${r.system} — ${r.facility}`))]; const tabWrap=qs("#edTabs"); let active=hospitals[0];
+  function renderED(){ const el=qs("#chartED"); el.getContext("2d").clearRect(0,0,el.width,el.height); const rows=edRows.filter(r=>`${r.system} — ${r.facility}`===active); const known=rows.filter(r=>typeof r.rate_usd==="number"); const payers=["self_pay_cash","medicaid","commercial_example"]; const data=payers.map(p=>{const row=rows.find(r=>r.payer_type===p); return row?.rate_usd??null;}); if(known.length){ new Chart(el,{type:"bar",data:{labels:payers.map(p=>p.replace("_"," ")),datasets:[{label:"USD per visit",data}]},options:{plugins:{legend:{display:false},tooltip:{callbacks:{label:(c)=>fmtUSD(c.parsed.y)}}},scales:{y:{beginAtZero:true,ticks:{callback:(v)=>fmtUSD(v)}}}}); qs("#edPending").textContent=""; } else { new Chart(el,{type:"bar",data:{labels:["No published rates available"],datasets:[{data:[0]}]},options:{plugins:{legend:{display:false},tooltip:{enabled:false}},scales:{y:{display:false},x:{display:false}}}}); qs("#edPending").innerHTML=`<span class="pending">Local rate extraction pending</span> · National mean (2021): <strong>$750</strong>`; } qs("#edSource").innerHTML=provenanceLinks(rows); }
+  hospitals.forEach((h,i)=>{ const b=document.createElement("button"); b.className="tab"+(i===0?" active":""); b.textContent=h; b.onclick=()=>{[...tabWrap.querySelectorAll("button.tab")].forEach(x=>x.classList.remove("active")); b.classList.add("active"); active=h; renderED();}; tabWrap.appendChild(b); });
+  if(!hospitals.length) tabWrap.innerHTML='<span class="small">No hospitals found in dataset.</span>';
+  renderED();
+
+  // What-if calculator
+  const refRows=refs.data||[]; const edMean=(refRows.find(r=>r.category==="ed_treat_and_release_us")?.value)||750; const rrh=refRows.find(r=>r.category==="rapid_rehousing_us")?.value||0; const psh=refRows.find(r=>r.category==="permanent_supportive_housing_us")?.value||0;
+  const slider=qs("#visitsSlider"); function recalc(){ const n=Number(slider.value); qs("#visitsCount").textContent=n; qs("#edTotal").textContent=fmtUSD(n*edMean); qs("#rrhAnnual").textContent=fmtUSD(rrh); qs("#pshAnnual").textContent=fmtUSD(psh); } slider.addEventListener("input",recalc); recalc();
+  qs("#calcSource").innerHTML=provenanceLinks(refRows.filter(r=>["ed_treat_and_release_us","rapid_rehousing_us","permanent_supportive_housing_us"].includes(r.category)));
+
+  // Findings & status
+  const fRows=finds.data||[]; const fWrap=qs("#findings"); fRows.forEach(row=>{ const div=document.createElement("div"); div.className="row"; div.style.margin="6px 0"; div.innerHTML=`<div>• ${row.text}</div>`; const src=document.createElement("div"); src.className="source"; src.innerHTML=provenanceLinks([row]); const box=document.createElement("div"); box.appendChild(div); box.appendChild(src); fWrap.appendChild(box); });
+  const status=qs("#status"); function pending(rows){ return rows.filter(r=>r.pending).length; } const cards=[{title:"Shelter costs", total:scRows.length, pending:pending(scRows), src:provenanceLinks(scRows)},{title:"Contracts", total:cRows.length, pending:0, src:provenanceLinks(cRows)},{title:"Hospital ED 99284", total:edRows.length, pending:pending(edRows), src:provenanceLinks(edRows)},{title:"Reference costs", total:refRows.length, pending:0, src:provenanceLinks(refRows)}];
+  status.innerHTML = `<div class="grid">` + cards.map(c=>`<div class="card span-3" style="padding:12px"><h3>${c.title}</h3><div class="row"><div><strong>${c.total}</strong> rows</div>${c.pending?`<div class="pending">${c.pending} pending</div>`:""}</div><div class="source" style="margin-top:6px">${c.src}</div></div>`).join("") + `</div>`;
+}
+init().catch(err=>{ console.error(err); qs("#app").innerHTML=`<div class="card"><h2>Load error</h2><p class="small">${String(err)}</p></div>`;});
+</script>
+</body>
+</html>
